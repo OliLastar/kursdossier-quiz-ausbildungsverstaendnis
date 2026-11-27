@@ -1,6 +1,10 @@
 export const LANGS = ['de', 'fr', 'it']
 export const LOCALE = { de: 'de-CH', fr: 'fr-CH', it: 'it-CH' }
 
+// Sprache: 1. Sprache in der Adresse, 2. erste passende Browsersprache (de/fr/it), 3. Deutsch.
+export const pickLang = (fromHash, browser = []) =>
+  LANGS.includes(fromHash) ? fromHash : (browser.map((b) => String(b).slice(0, 2).toLowerCase()).find((b) => LANGS.includes(b)) || 'de')
+
 export const T = {
   de: {
     title: 'Wissenscheck J+S-Leiterkurs Ski/Snowboard',

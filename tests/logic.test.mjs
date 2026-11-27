@@ -39,3 +39,15 @@ test('K4: DE/FR/IT haben dieselben Fragen-IDs und dieselbe richtige Position', (
     assert.equal(sig('fr'), sig('de')); assert.equal(sig('it'), sig('de'))
   }
 })
+
+// K5: Sprachwahl – Adresse vor Browser vor Deutsch
+import { pickLang } from '../src/lib/i18n.js'
+test('K5: Sprachwahl aus Adresse und Browsersprache', () => {
+  assert.equal(pickLang('fr', ['it-CH']), 'fr')
+  assert.equal(pickLang(undefined, ['fr-CH', 'de']), 'fr')
+  assert.equal(pickLang('', ['en-US', 'it', 'de']), 'it')
+  assert.equal(pickLang(undefined, ['en-US', 'rm']), 'de')
+  assert.equal(pickLang('xx', ['FR']), 'fr')
+  assert.equal(pickLang(undefined, []), 'de')
+  assert.equal(pickLang(undefined), 'de')
+})

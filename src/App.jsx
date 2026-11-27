@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import data from './data/quizzes.json'
-import { LANGS, LOCALE, T } from './lib/i18n.js'
+import { LANGS, LOCALE, T, pickLang } from './lib/i18n.js'
 import { grade, newRound } from './lib/quiz.js'
 import logoJs from './assets/logo-js.png'
 import logoSki from './assets/logo-swiss-ski.png'
@@ -10,7 +10,7 @@ import logoSki from './assets/logo-swiss-ski.png'
 const SINGLE = data.themen.length === 1 ? data.themen[0].slug : null
 const readHash = () => {
   const [, l, s] = window.location.hash.split('/')
-  return { lang: LANGS.includes(l) ? l : 'de', slug: SINGLE || (data.quiz[s] ? s : null) }
+  return { lang: pickLang(l, navigator.languages || [navigator.language]), slug: SINGLE || (data.quiz[s] ? s : null) }
 }
 
 export default function App() {
@@ -25,6 +25,11 @@ export default function App() {
     try { window.location.hash = `/${l}${s && !SINGLE ? `/${s}` : ''}` } catch { /* Adresse nicht beschreibbar (z. B. eingebettete Vorschau) */ }
   }
   const t = T[lang]
+  // Name unter dem Symbol beim Ablegen auf dem Telefon: in der gewählten Sprache
+  useEffect(() => {
+    const m = document.querySelector('meta[name="apple-mobile-web-app-title"]')
+    if (m && SINGLE) m.setAttribute('content', data.themen[0].kurz[lang])
+  }, [lang])
   useEffect(() => { document.documentElement.lang = lang; document.title = SINGLE ? `${data.themen[0].titel[lang]} – ${t.title}` : t.title }, [lang, t.title])
 
   return (
